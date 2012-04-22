@@ -16,7 +16,7 @@ XCE             ; fb             - 01        ; init
 LDA $00         ; a5 00          - 02 03
 MMU #$00        ; ef 00          - 04 05     ; set bus to floppy id
 
-RER $30         ; c2 30          - 06 07     ; ???
+REP $30         ; c2 30          - 06 07     ; reset flags
 
 LDA $0300       ; a9 00 30       - 08 09 0A
 MMU #$01        ; ef 01          - 0B 0C     ; set bus offset to 0x0300
