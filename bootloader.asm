@@ -69,6 +69,7 @@ TXI             ; 5c             - 39        ; set (i) to (x + i)
 
 LDY #$0040      ; a0 40 00       - 3A 3B 3C  ; set y to 0x0040 (128 sector size)
 NXA             ; 42 92 04       - 3D 3E 3F  ; increment i, set a to i
+STA ($04)       ;                            ; store a to write offset
 
 INC $04         ; e6 04          - 40 41     ; increments value at 0x04
 INC $04         ; e6 04          - 42 43     ; increments value at 0x04
