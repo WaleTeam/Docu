@@ -1,0 +1,15 @@
+- one process per cpu
+- shell, with PATH
+- filesystem
+- memory managent
+- simple cpu networking
+
+- filestrcture
+    /bin/
+    /rom/
+
+- suspend to disk
+- kernel disk
+- load library
+
+- program stack
