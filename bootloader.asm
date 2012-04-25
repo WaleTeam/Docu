@@ -16,7 +16,7 @@ XCE             ; fb             - 01        ; init
 LDA $00         ; a5 00          - 02 03
 MMU #$00        ; ef 00          - 04 05     ; set bus to floppy id
 
-RER $30         ; c2 30          - 06 07     ; ???
+REP $30         ; c2 30          - 06 07     ; reset flags
 
 LDA $0300       ; a9 00 30       - 08 09 0A
 MMU #$01        ; ef 01          - 0B 0C     ; set bus offset to 0x0300
@@ -69,6 +69,7 @@ TXI             ; 5c             - 39        ; set (i) to (x + i)
 
 LDY #$0040      ; a0 40 00       - 3A 3B 3C  ; set y to 0x0040 (128 sector size)
 NXA             ; 42 92 04       - 3D 3E 3F  ; increment i, set a to i
+STA ($04)       ;                            ; store a to write offset
 
 INC $04         ; e6 04          - 40 41     ; increments value at 0x04
 INC $04         ; e6 04          - 42 43     ; increments value at 0x04

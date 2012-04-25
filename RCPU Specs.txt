@@ -2,58 +2,67 @@ Memory structure:
 	0x0000		Zero page
 	0x0100		P-stack
 	0x0200		R-stack
-	0x0300		bus output
-	0x0400		bus input (also Bootloader space)
+	0x0300		bus
+	0x0400		receiving bus
 	0x0500		Ram
 
 MMU OpCode:
-	0x00 		set bus to A
-	0x80		set A to bus
+	0x00 Map device in Reg A to redbus window.
+	0x80 Get mapped device to A.
+	
+	0x01 Redbus Window offset to A
+	0x81 Get RB window offset to A.
+	
+	0x02 Enable redbus
+	0x82 Disable redbus
+	
+	0x03 Set external memory mapped window to A.
+	0x83 Get memory mapped window to A.
+	
+	0x04 Enable external memory mapped window.
+	0x84 Disable external memory mapped window.
+	
+	0x05 Set BRK address to A
+	0x85 Get BRK address to A
+	
+	0x06 Set POR address to A
+	0x86 Get POR address to A
 
-	0x01 		set bus offset to A
-	0x81		set A to bus offset
+	0xFF Output A register to MC logfile.
 
-	0x02 		enable bus
-	0x82		disable bus
+Display Registers:
+	0x00 Memory access row.
+	
+	0x01 cursor x
+	0x02 cursor y
+	0x03 cursor mode (0: hidden, 1: solid, 2: blink)
+	
+	0x04 key buffer start (16 byte buffer)
+	0x05 key buffer position
+	0x06 key value at buffer start
+	
+	0x07 blit mode (1: fill, 2: invert; 3: shift)
+	0x08 blit x start / fill value
+	0x09 blit y start
+	0x0A blit x offset
+	0x0B blit y offset
+	0x0C blit width
+	0x0D blit height
+	
+	0x10 -> 0x60 display memory window
 
-	0x03 		set memory read/write offset to A
-	0x83 		set A to memory read/write offset
+IO Expander:
+	0x00-0x01: Read buffer (little endian)
+	0x02-0x03: Output latch
 
-	0x04 		enable read/write operations to memory
-	0x84		disable read/write operations to memory
-
-	0x05 		set BRK address to A
-	0x85		set A to BRK address
-
-	0x06		set POR address to A
-	0x86		set A to POR address
-
-	0xFF		print out "MMUDBG: A: FFx (255), SP: FFx"
-
-Display Specifications:
-	key input buffer of 16 bytes
-	80 * 80 resolution
-	cursor with modes
-
-Display Value:
-	0x00 		row
-
-	0x01 		cursor x
-	0x02 		cursor y
-	0x03 		cursor mode (0: hidden, 1: solid, 2: blink)
-
-	0x04 		key buffer start
-	0x05 		key buffer position
-	0x06		key value at buffer start
-
-	0x07		blit mode (1: fill, 2: ???; 3: shift)
-	0x08		blit x start / blit value
-	0x09		blit y start
-	0x0A		blit x offset
-	0x0B		blit y offset
-	0x0C 		blit width
-	0x0D		blit height
-
-	0x10 -> 0x60
-	sets / gets cell value at (reg - 0x10)
-	the row would be equal to the row set
+Disk Drive:
+	0x00-0x7F: Disk sector buffer
+	0x80-0x81: Sector number
+	0x82: Disk command:
+		0: Idle/success
+		1: Read Disk Name
+		2: Write Disk Name
+		3: Read Disk Serial
+		4: Read Disk Sector
+		5: Write Disk Sector
+		0xFF: Command failure
