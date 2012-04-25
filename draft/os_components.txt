@@ -1,23 +1,35 @@
-- default 8bit mode
-- 16bit calculations get emulated
+- arch: 8bit, with emulated 16bit calculations
+
 - one process per cpu
-- shell, with PATH
+    - maybe timer based threading later
+
+- device drivers
+    select, read, write
+    - display
+    - external controller
+    - floppy
+    - cpu mem window access
+
 - filesystem
+    read, write, seek, open, close, stat
     -> disk file system
     -> virtual file system
-        -> file descriptor
-            read, write, seek
-            device selection
-
-- memory managent
-- simple cpu networking
 
 - filestrcture
     /bin/
     /rom/
 
+- memory managent
+    malloc, free
+
+- simple cpu networking
+
 - suspend to disk
+
 - kernel disk
+
 - load library
 
-- program stack
+- load programm
+
+- shell, with PATH
