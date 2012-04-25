@@ -1,6 +1,14 @@
+- default 8bit mode
+- 16bit calculations get emulated
 - one process per cpu
 - shell, with PATH
 - filesystem
+    -> disk file system
+    -> virtual file system
+        -> file descriptor
+            read, write, seek
+            device selection
+
 - memory managent
 - simple cpu networking
 
