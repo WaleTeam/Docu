@@ -1,7 +1,6 @@
-- arch: 8bit, with emulated 16bit calculations
+- arch: native 16bit, with register selection for 8bit
 
 - one process per cpu
-    - maybe timer based threading later
 
 - device drivers
     select, read, write
@@ -33,3 +32,7 @@
 - load programm
 
 - shell, with PATH
+
+
+far far future:
+    - timer based threading (needs rcpu timer beeing implemented first)
