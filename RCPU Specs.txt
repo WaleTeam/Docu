@@ -2,8 +2,8 @@ Memory structure:
 	0x0000		Zero page
 	0x0100		P-stack
 	0x0200		R-stack
-	0x0300		bus output
-	0x0400		bus input (also Bootloader space)
+	0x0300		bus
+	0x0400		receiving bus
 	0x0500		Ram
 
 MMU OpCode:
