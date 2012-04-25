@@ -1,0 +1,30 @@
+Waleos Bios Image Structure:    ; bootable disk
+
+[redirect]              ----+   ; lader modified to be the jumptable redirect   
+                            |
+[kernel]                    |   ; the kernel :D
+{jumptable}                 |
+                            |
+[bootloader code]       <---+   ; loads the first program from disk etc... (also mounts disk)
+
+
+Waleos Disk Drive:              ; runs a filesystem
+
+
+Waleos Memory Structure:
+[jumptable redirect]
+[kernel]
+{jumptable}
+
+
+[program stack]                 ; at the end of the memory
+
+
+
+If you want to call a function:
+
+LDA #$AB
+PHA                             ; push argument on stack
+LDA #$01
+PHA                             ; push function id on stack
+JMP $0500                       ; JMP to jumptable redirect
