@@ -1,4 +1,5 @@
 http://www.defence-force.org/computing/oric/coding/annexe_2/
+http://en.wikibooks.org/wiki/Super_NES_Programming/65c816_reference
 http://en.wikibooks.org/wiki/6502_Assembly
 http://www.eloraam.com/nonwp/redcpu.php
 http://www.eloraam.com/?p=255
