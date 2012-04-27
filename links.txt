@@ -3,3 +3,6 @@ http://en.wikibooks.org/wiki/Super_NES_Programming/65c816_reference
 http://en.wikibooks.org/wiki/6502_Assembly
 http://www.eloraam.com/nonwp/redcpu.php
 http://www.eloraam.com/?p=255
+
+multitasking example:
+http://www.6502.org/source/kernels/minikernel.txt
