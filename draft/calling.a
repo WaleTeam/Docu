@@ -215,8 +215,8 @@ _main:
     pea textMessage2; push parameter 1 (stringAddress)
     jsr _print
 
-    pea $0006
-    pea $0310
+    pea $0006       ; integer to convert
+    pea $0310       ; address to store the character to (first byte of display row :)
     jsr _itoc
 
     stp             ; KILL
