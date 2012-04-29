@@ -39,29 +39,29 @@ phx             ; save x to stack
 
 ldx #redbus_mem ; index into redbus mem
 
-sep #$20
-!as
-lda #" "
-sta $08, x      ; blit character to use
-
-stz $0A, x      ; start x = 0
-stz $0B, x      ; start y = 0
-
-lda #80
-sta $0C, x      ; 80 columns
-
-lda #80
-sta $0D, x      ; 80 rows
-
-lda #$01
-sta $07, x      ; blit mode 1 for display
-
+    sep #$20
+    !as
+    lda #" "
+    sta $08, x      ; blit character to use
+    
+    stz $0A, x      ; start x = 0
+    stz $0B, x      ; start y = 0
+    
+    lda #80
+    sta $0C, x      ; 80 columns
+    
+    lda #80
+    sta $0D, x      ; 80 rows
+    
+    lda #$01
+    sta $07, x      ; blit mode 1 for display
+    
 _clear_screen_wait:
-lda $07, x
-bne _clear_screen_wait
-
-rep #$30
-!al
+        lda $07, x
+        bne _clear_screen_wait
+    
+    rep #$30
+    !al
 
 plx
 
@@ -93,44 +93,112 @@ txy     ;store stack pointer
 phy     ;store stack pointer
 pld     ;store stack pointer
 
-sep #$20
-!as
-
-ldx #$0300      ; prepare write to display
-lda $0D, y      ; get parameter 3 (y)
-sta $00, x      ; row
-sta $02, x      ; cursur y
-lda $0C, y      ; get parameter 2 (x)
-sta $01, x      ; cursor x
-
-
-rep #$30
-!al
-ldx $0A, y      ; load parameter 1 (stringAddress)
-and #$00FF      ; kick upper byte
-adc #$0310      ; calculate row address
-tay
-
-sep #$20
-!as
-
+    sep #$20
+    !as
+    
+    ldx #$0300      ; prepare write to display
+    lda $0D, y      ; get parameter 3 (y)
+    sta $00, x      ; row
+    sta $02, x      ; cursur y
+    lda $0C, y      ; get parameter 2 (x)
+    sta $01, x      ; cursor x
+    
+    
+    rep #$30
+    !al
+    ldx $0A, y      ; load parameter 1 (stringAddress)
+    and #$00FF      ; kick upper byte
+    adc #$0310      ; calculate row address
+    tay
+    
+    sep #$20
+    !as
+    
 _print_loop:
-lda $00, x              ; load character
-beq _print_loop_end     ; check if terminator 0 is reached, YES: end loop
-sta $00, y              ; store character into row
-inx                     ; increment string address
-iny                     ; increment row address
-jmp _print_loop
-
+        lda $00, x              ; load character
+        beq _print_loop_end     ; check if terminator 0 is reached, YES: end loop
+        sta $00, y              ; store character into row
+        inx                     ; increment string address
+        iny                     ; increment row address
+        jmp _print_loop
+    
 _print_loop_end:
-
-rep #$30
-!al
+    
+    rep #$30
+    !al
 
 pld     ;restore registers for callee
 ply     ;restore registers for callee
 plx     ;restore registers for callee
 pla     ;restore registers for callee
+
+rts
+
+_itoc:
+; F  unused
+; E  parameter2     - integer
+; D  parameter1_H   - stringAddress
+; C  parameter1_L   - stringAddress
+; B  returnH
+; A  returnL
+; 9  aH
+; 8  aL
+; 7  xH
+; 6  xL
+; 5  yH
+; 4  yL
+; 3  dH
+; 2  dL
+; 1  v1
+; 0  v2
+
+lda #$FFEE
+pha         ; save callee registers
+phx         ; save callee registers
+phy         ; save callee registers
+phd         ; save callee registers
+
+tsx         ; get current stack pointer
+phx
+pld         ; save current stack pointer in d for later use
+txa
+adc #$FFFE  ; decrement stack frame by two bytes
+tax
+txy
+txs         ; move stack forward
+
+
+    sep #$20
+    !as
+    
+    lda #$2F
+    sta $00, y  ; char v2 = '0';
+    
+    lda $0E, y
+    sta $01, y  ; char v1 = parameter2;
+    
+    lda $01, y
+    adc $00, y
+    sta $00, y  ; v2 = v1 + v2;
+    
+    ldx $0C, y  
+    lda $00, y
+    sta $00, x  ; stringAddress[0] = v2
+    
+    rep #$30
+    !al
+
+    lda $0C, y
+    mmu #$FF
+
+phd
+plx
+txs         ; clean local variables and place stack back to saved registers
+
+pld
+ply
+plx
+pla
 
 rts
 
@@ -146,6 +214,10 @@ _main:
     pea $0608       ; push parameter 3 (y) and parameter 2 (x)
     pea textMessage2; push parameter 1 (stringAddress)
     jsr _print
+
+    pea $0006
+    pea $0310
+    jsr _itoc
 
     stp             ; KILL
 
