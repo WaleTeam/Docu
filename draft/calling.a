@@ -66,8 +66,10 @@ plx
 rts
 
 _print:
-; B  parameter1_H
-; A  parameter1_L
+; D  parameter3     - y
+; C  parameter2     - x
+; B  parameter1_H   - stringAddress
+; A  parameter1_L   - stringAddress
 ; 9  returnH
 ; 8  returnL
 ; 7  aH
@@ -94,8 +96,16 @@ pld
 sep #$20
 !as
 
+ldx #$0300
+lda $0D, y
+sta $00, x      ; row
+sta $02, x      ; cursur y
+lda $0C, y
+sta $01, x      ; cursor x
+
 ldx $0A, y
 ldy #$300
+
 _print_loop:
 lda $00, x
 beq _print_loop_end
@@ -134,10 +144,10 @@ mmu #$FF
 jsr _clear_screen
 lda #$04
 mmu #$FF
+pea $0500      ;y:x
 pea textMessage
 lda #$05
 mmu #$FF
-;jsr _print_hello
 jsr _print
 lda #$06
 mmu #$FF
