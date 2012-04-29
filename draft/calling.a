@@ -140,6 +140,9 @@ jsr _clear_screen
 pea $0507       ; push parameter 3 (y) and parameter 2 (x)
 pea textMessage ; push parameter 1 (stringAddress)
 jsr _print
+pea $0608       ; push parameter 3 (y) and parameter 2 (x)
+pea textMessage2; push parameter 1 (stringAddress)
+jsr _print
 stp
 
 
@@ -154,6 +157,9 @@ rts
 ;DATA
 textMessage:
 !text "Hello World"
+!byte $0
+textMessage2:
+!text "This is another TestText"
 !byte $0
 
 ; make sure disk is long enough
