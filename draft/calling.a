@@ -101,8 +101,16 @@ sta $02, x      ; cursur y
 lda $0C, y      ; get parameter 2 (x)
 sta $01, x      ; cursor x
 
+
+rep #$30
+!al
 ldx $0A, y      ; load parameter 1 (stringAddress)
-ldy #$300       ; prepare write to display
+and #$00FF
+adc #$0300
+tay
+
+sep #$20
+!as
 
 _print_loop:
 lda $00, x              ; load character
@@ -129,7 +137,7 @@ jsr _init_redbus
 jsr _select_display
 jsr _initialize_display
 jsr _clear_screen
-pea $0500       ; push parameter 3 (y) and parameter 2 (x)
+pea $0507       ; push parameter 3 (y) and parameter 2 (x)
 pea textMessage ; push parameter 1 (stringAddress)
 jsr _print
 stp
