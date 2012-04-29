@@ -1,0 +1,174 @@
+!to "basic.img", plain
+!al
+!rl
+
+* = $500
+display_io_address = $01
+redbus_mem = $0300
+
+clc
+xce ;enter native 65C816 mode
+rep #$30 ; regisers are all 16bit
+
+jmp _boot
+
+_select_display:
+lda display_io_address
+mmu #$00
+
+_initialize_display:
+phx
+ldx #redbus_mem
+
+sep #$20
+!as
+stz $00, x      ; row = 0
+stz $01, x      ; cursor x = 0
+stz $02, x      ; cursor y = 0
+;stz $03, x      ; cursor mode = hidden
+rep #$30
+!al
+
+plx
+rts
+
+_clear_screen:
+phx             ; save x to stack
+
+ldx #redbus_mem ; index into redbus mem
+
+sep #$20
+!as
+lda #" "
+sta $08, x      ; blit character to use
+
+stz $0A, x      ; start x = 0
+stz $0B, x      ; start y = 0
+
+lda #80
+sta $0C, x      ; 80 columns
+
+lda #80
+sta $0D, x      ; 80 rows
+
+lda #$01
+sta $07, x      ; blit mode 1 for display
+
+_clear_screen_wait:
+lda $07, x
+bne _clear_screen_wait
+
+rep #$30
+!al
+
+plx
+
+rts
+
+_print:
+; B  parameter1_H
+; A  parameter1_L
+; 9  returnH
+; 8  returnL
+; 7  aH
+; 6  aL
+; 5  xH
+; 4  xL
+; 3  yH
+; 2  yL
+; 1  dH
+; 0  dL
+
+lda #$EE
+mmu #$FF
+pha
+phx
+phy
+phd
+
+tsx
+txy
+phy
+pld
+
+sep #$20
+!as
+
+ldx $0A, y
+ldy #$300
+_print_loop:
+lda $00, x
+beq _print_loop_end
+sta $10, y
+inx
+iny
+mmu #$FF
+jmp _print_loop
+
+_print_loop_end:
+
+rep #$30
+!al
+
+pld
+ply
+plx
+pla
+lda #$EE
+mmu #$FF
+
+rts
+
+_boot:
+lda #$00
+mmu #$FF
+jsr _init_redbus
+lda #$01
+mmu #$FF
+jsr _select_display
+lda #$02
+mmu #$FF
+jsr _initialize_display
+lda #$03
+mmu #$FF
+jsr _clear_screen
+lda #$04
+mmu #$FF
+pea textMessage
+lda #$05
+mmu #$FF
+;jsr _print_hello
+jsr _print
+lda #$06
+mmu #$FF
+stp
+
+
+;functions which use all 16bit addressing
+_init_redbus:
+lda #redbus_mem
+mmu #$01        ; set redbus window to memory location $300
+mmu #$02        ; enable redbus
+mmu #$FF
+rts
+
+
+;DATA
+textMessage:
+!text "Hello World"
+!byte $0
+
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+!byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0
